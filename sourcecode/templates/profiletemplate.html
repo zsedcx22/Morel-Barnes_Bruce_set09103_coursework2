@@ -1,9 +1,23 @@
 {% extends "overtemplate.html" %}
 {% block content %}
-<h1></h1>
-<form action="" method="post" name="form" enctype="multipart/form-data">
-    <p>
-      <input type="submit" name="submit" value="all">
-    </p>
-</form>
+  <div class="container">
+    <div class="row">
+      <div class="col" align="center">
+        <label><font size="18">Card Games Login</font><label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" align="center">
+        <div class="form-group">
+          <label for="usr">Username:</label>
+          <input type="text" class="form-control" id="usr">
+        </div>
+        <div class="form-group">
+          <label for="pwd">Password:</label>
+          <input type="password" class="form-control" id="pwd">
+        </div>
+        <button type="submit">Log In</button>
+      </div>
+    </div>
+  </div>
 {% endblock %}
