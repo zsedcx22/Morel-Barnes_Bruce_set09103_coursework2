@@ -1,23 +1,27 @@
 {% extends "overtemplate.html" %}
 {% block content %}
+<form action="" method="POST" role="form" class="form-horizontal">
   <div class="container">
     <div class="row">
       <div class="col" align="center">
-        <label><font size="18">Card Games Login</font><label>
+        <label><font size="18">{{ username }}'s Profile</font><label>
       </div>
     </div>
     <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label for="wins">Wins: </label>
+          <label id="wins">{{ wins }}</label>
+        </div>
+        <div class="form-group">
+          <label for="losses">Losses: </label>
+          <label id="losses">{{ losses }}</label>
+        </div>
+      </div>
       <div class="col" align="center">
-        <div class="form-group">
-          <label for="usr">Username:</label>
-          <input type="text" class="form-control" id="usr">
-        </div>
-        <div class="form-group">
-          <label for="pwd">Password:</label>
-          <input type="password" class="form-control" id="pwd">
-        </div>
-        <button type="submit">Log In</button>
+        <button type="submit" name="submit">Queue for Blackjack</button>
       </div>
     </div>
   </div>
+</form>
 {% endblock %}
