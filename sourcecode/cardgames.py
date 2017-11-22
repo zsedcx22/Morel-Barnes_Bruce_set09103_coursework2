@@ -87,51 +87,143 @@ def blackjack(gameid):
   if(request.method=='POST'):
     button=request.form["submit"]
     if button=="hitme":
-      length=len(p1hand)+1
-      while len(p1hand)<length:
-        if random not in p1hand:
-          if random not in p2hand:
-            if session['user']==player1
+      if session['user']==player1:
+        length=len(p1hand)+1
+        while len(p1hand)<length:
+          random=deck[randint(0,len(deck)-1)]
+          if random not in p1hand:
+            if random not in p2hand:
               p1hand.append(random)
-            elif session['user']==player2:
+      elif session['user']==player2:
+        length=len(p2hand)+1
+        while len(p2hand)<length:
+          random=deck[randint(0,len(deck)-1)]
+          if random not in p1hand:
+            if random not in p2hand:
               p2hand.append(random)
-      return render_template("blackjacktemplate.html", p1name=player1,
-    p2name=player2, p1h=p1hand, p2h=p2hand) #add card to hand
+
+      p1total=0
+      p2total=0
+
+      for card in p1hand:
+        if(card[:2]=="13")or(card[:2]=="12")or(card[:2]=="11")or(card[:2]=="10"):
+          p1total+=10
+        elif card[:1]=="1":
+          if p1total<11:
+            p1total+=11
+          else:
+            p1total+=1
+        else:
+          p1total+=int(card[:1])
+
+      for card in p2hand:
+        if(card[:2]=="13")or(card[:2]=="12")or(card[:2]=="11")or(card[:2]=="10"):
+          p2total+=10
+        elif card[:1]=="1":
+          if p2total<11:
+            p2total+=11
+        else:
+          p2total+=1
+      else:
+        p2total+=int(card[:1])
+      return render_template("blackjacktemplate.html",
+      username=session['user'], p1name=player1,
+      p2name=player2, p1h=p1hand, p2h=p2hand,
+      p1t=p1total, p2t=p2total) #add card to hand
     elif button=="stick":
-      if session['user']==player1:
-        return
-      elif session['user']==player2:
-        return render_template("blackjacktemplate.html", p1name=player1,
-      p2name=player2, p1h=p1hand, p2h=p2hand) #pass the turn to other player/reveal hands and declare winner
-    elif button=="fold":
-      con=sqlite3.connect('database/userdb.db')
-      cur=con.cursor()
-      if session['user']==player1:
-        cur.execute('''UPDATE user SET losses=losses+1 WHERE
-        username="{}";'''.format(player1))
-        cur.execute('''UPDATE user SET wins=wins+1 WHERE
-        username="{}";'''.format(player2))
-        con.commit()
-      elif session['user']==player2:
-        cur.execute('''UPDATE user SET losses=losses+1 WHERE
-        username="{}";'''.format(player2))
-        cur.execute('''UPDATE user SET wins=wins+1 WHERE
-        username="{}";'''.format(player1))
-        con.commit()
-      return #win/loss page
+      return redirect('/blackjack/winner')
+
   elif(request.method=='GET'):
     while len(p1hand)<2:
       random=deck[randint(0,len(deck)-1)]
       if random not in p1hand:
         p1hand.append(random)
-
     while len(p2hand)<2:
       random=deck[randint(0,len(deck)-1)]
       if random not in p2hand:
         if random not in p1hand:
           p2hand.append(random)
 
-    return render_template("blackjacktemplate.html", p1name=player1,
-    p2name=player2, p1h=p1hand, p2h=p2hand) #launches the jinja2 template
+    p1total=0
+    p2total=0
+
+    for card in p1hand:
+      if(card[:2]=="13")or(card[:2]=="12")or(card[:2]=="11")or(card[:2]=="10"):
+        p1total+=10
+      elif card[:1]=="1":
+        if p1total<11:
+          p1total+=11
+        else:
+          p1total+=1
+      else:
+        p1total+=int(card[:1])
+
+    for card in p2hand:
+      if(card[:2]=="13")or(card[:2]=="12")or(card[:2]=="11")or(card[:2]=="10"):
+        p2total+=10
+      elif card[:1]=="1":
+        if p2total<11:
+          p2total+=11
+        else:
+          p2total+=1
+      else:
+        p2total+=int(card[:1])
+
+    return render_template("blackjacktemplate.html", username=session['user'],
+    p1name=player1, p2name=player2, p1h=p1hand, p2h=p2hand,
+    p1t=p1total, p2t=p2total) #launches the jinja2 template
+@app.route('/blackjack/winner', methods=['POST','GET'])
+def winner():
+  if request.method=='GET':
+    p1total=0
+    p2total=0
+
+    for card in p1hand:
+      if(card[:2]=="13")or(card[:2]=="12")or(card[:2]=="11")or(card[:2]=="10"):
+        p1total+=10
+      elif card[:1]=="1":
+        if p1total<11:
+          p1total+=11
+        else:
+          p1total+=1
+      else:
+        p1total+=int(card[:1])
+
+    for card in p2hand:
+      if(card[:2]=="13")or(card[:2]=="12")or(card[:2]=="11")or(card[:2]=="10"):
+        p2total+=10
+      elif card[:1]=="1":
+        if p2total<11:
+          p2total+=11
+        else:
+          p2total+=1
+      else:
+        p2total+=int(card[:1])
+    win=""
+    if p1total>p2total:
+      win=player1
+      con=sqlite3.connect('database/userdb.db')
+      cur=con.cursor()
+      cur.execute('''UPDATE user SET wins=wins+1 WHERE
+      username="{}";'''.format(player1))
+      con.commit()
+      cur.execute('''UPDATE user SET losses=losses+1 WHERE
+      username="{}";'''.format(player2))
+      con.commit()
+    elif p2total>p1total:
+      win=player2
+      con=sqlite3.connect('database/userdb.db')
+      cur=con.cursor()
+      cur.execute('''UPDATE user SET wins=wins+1 WHERE
+      username="{}";'''.format(player2))
+      con.commit()
+      cur.execute('''UPDATE user SET losses=losses+1 WHERE
+      username="{}";'''.format(player1))
+      con.commit()
+    elif p1total==p2total:
+      win="draw"
+    return render_template('winnertemplate.html', winnername=win)
+  elif request.method=='POST':
+    return redirect('/profile/')
 if __name__ == "__main__":
   app.run(host='0.0.0.0', debug=True, threaded=True)

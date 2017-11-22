@@ -1,0 +1,27 @@
+<!doctype html>
+<head>
+  <title>Winner Winner</title>
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+  rel="stylesheet" />
+</head>
+<body>
+<form action="" method="POST" role="form" class="form-horizontal">
+  <div class="container">
+    <div class="row">
+      <div class="col" align="center">
+      {% if winnername=="draw" %}
+        <label><font size="18">The Game Is A Draw</font></label>
+      {% else %}
+        <label><font size="18">The Winner Is {{ winnername }}</font></label>
+      {% endif %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" align="right">
+        <button type="submit" name="submit" value="back">Back to Profile</button>
+      </div>
+    </div>
+  </div>
+</form>
+</body>
+</html>

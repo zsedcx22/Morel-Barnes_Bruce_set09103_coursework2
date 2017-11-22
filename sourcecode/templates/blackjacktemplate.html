@@ -1,5 +1,6 @@
 <!doctype html>
 <head>
+  <meta http-equiv="refresh" content="10" />
   <title>{{ p1name }} VS {{ p2name }}</title>
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
   rel="stylesheet" />
@@ -13,10 +14,33 @@
       </div>
     </div>
     <div class="row">
+      <div class="col">
+        {% if username==p1name %}
+          {% for card in p2h %}
+            <img src="/static/deck/{{ card }}.png" width="30">
+          {% endfor %}
+        {% elif username==p2name %}
+          {% for card in p1h %}
+            <img src="/static/deck/{{ card }}.png" width="30">
+          {% endfor %}
+        {% endif %}
+      </div>
       <div class="col" align="right">
         <button type="submit" name="submit" value="hitme">Hit Me</button>
         <button type="submit" name="submit" value="stick">Stick</button>
-        <button type="submit" name="submit" value="fold">Fold</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        {% if username==p2name %}
+          {% for card in p2h %}
+            <img src="/static/deck/{{ card }}.png" width="30">
+          {% endfor %}
+        {% elif username==p1name %}
+          {% for card in p1h %}
+            <img src="/static/deck/{{ card }}.png" width="30">
+          {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
